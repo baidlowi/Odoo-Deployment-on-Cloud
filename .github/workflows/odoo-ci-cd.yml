@@ -1,0 +1,56 @@
+name: Build and Deploy to GKE
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GAR_LOCATION: us-central1 # TODO: update region of the Artifact Registry
+  GKE_CLUSTER: cluster-1    # TODO: update to cluster name
+  GKE_ZONE: us-central1-c   # TODO: update to cluster zone
+  DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
+  REPOSITORY: samples # TODO: update to Artifact Registry docker repository
+  IMAGE: static-site
+
+jobs:
+  build:
+      name: 'Build Odoo'
+      runs-on: ubuntu-latest
+  
+      steps:
+        - uses: actions/checkout@v2
+        - name: Set up JDK 11
+          uses: actions/setup-java@v1
+          with:
+            java-version: 11
+        - name: Build Docker Image
+          run: docker build -t odoo-dev .
+  
+  test:
+      name: 'Test Odoo'
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Run tests
+          run: |
+            echo --- Running test cases ---
+            docker-compose -f  -p  \
+            up --build --exit-code-from 
+            echo --- Completed test cases ---
+
+  push:
+      name: 'Push to DockerHub'
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Login to DockerHub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+  
+        - name: Push Odoo-dev Docker Image
+          run: docker push odoo-dev
+        
+
