@@ -46,8 +46,8 @@ jobs:
         - name: Tag Docker Image
           run: |
             docker ps -a
-            docker tag odoo baidlowi/odoo-dev
-            docker tag postgres baidlowi/postgres
+            docker tag odoo:17 baidlowi/odoo-dev
+            docker tag postgres:15 baidlowi/postgres
           
         - name: Push Odoo-dev Docker Image
           run: |
