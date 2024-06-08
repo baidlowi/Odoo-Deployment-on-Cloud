@@ -24,7 +24,7 @@ jobs:
             docker rm $(docker ps -a -q) -v
         
   build:
-      name: 'Build Odoo'
+      name: 'Build & Push Odoo'
       runs-on: ubuntu-latest
   
       steps:
@@ -32,31 +32,15 @@ jobs:
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v2
           
+        - name: Clear Docker
+          run: docker rm -f $(docker ps -a -q)
+          
         - name: Build Docker Image
           run: docker-compose build
 
         - name: List Docker Image
           run: docker ps -a
   
-  test:
-      needs: build
-      name: 'Test Odoo'
-      runs-on: ubuntu-latest
-  
-      steps:
-        - name: Run tests
-          run: |
-            echo --- Running test cases ---
-            docker-compose -f  -p  \
-            up --build --exit-code-from 
-            echo --- Completed test cases ---
-
-  push:
-      needs: test
-      name: 'Push to DockerHub'
-      runs-on: ubuntu-latest
-  
-      steps:
         - name: Check Username DockerHub
           run: echo ${{ secrets.DOCKER_USERNAME }}
           
@@ -73,4 +57,16 @@ jobs:
         - name: Push Odoo-dev Docker Image
           run: docker push baidlowi/odoo-dev
         
+  test:
+      needs: build
+      name: 'Test Odoo'
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Run tests
+          run: |
+            echo --- Running test cases ---
+            docker-compose -f  -p  \
+            up --build --exit-code-from 
+            echo --- Completed test cases ---
 
