@@ -12,7 +12,8 @@ env:
   DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
   REPOSITORY: samples # TODO: update to Artifact Registry docker repository
   IMAGE: static-site
-        
+
+jobs:
   build:
       name: 'Build & Push Odoo'
       runs-on: ubuntu-latest
