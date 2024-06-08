@@ -25,6 +25,9 @@ jobs:
           
         - name: Build Docker Image
           run: docker-compose build
+
+        - name: List Docker Image
+          run: docker ps -a
   
   test:
       needs: build
