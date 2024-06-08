@@ -14,6 +14,15 @@ env:
   IMAGE: static-site
 
 jobs:
+  clear:
+      name: 'Clear Docker'
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Clear Docker
+          run: |
+            docker rm $(docker ps -a -q) -v
+        
   build:
       name: 'Build Odoo'
       runs-on: ubuntu-latest
@@ -58,7 +67,8 @@ jobs:
             password: ${{ secrets.DOCKER_PASSWORD }}
   
         - name: Tag Docker Image
-          run: docker tag moby/buildkit:buildx-stable-1 baidlowi/odoo-dev
+          run: docker ps -a
+          # run: docker tag moby/buildkit:buildx-stable-1 baidlowi/odoo-dev
           
         - name: Push Odoo-dev Docker Image
           run: docker push baidlowi/odoo-dev
