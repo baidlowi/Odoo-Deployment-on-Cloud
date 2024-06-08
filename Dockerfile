@@ -1,4 +1,4 @@
-from odoo:14.0
+from odoo:17.0
 
 USER root
 RUN mkdir /opt/odoo && mkdir /opt/odoo/extra-addons
