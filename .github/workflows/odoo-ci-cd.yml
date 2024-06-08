@@ -44,11 +44,15 @@ jobs:
             password: ${{ secrets.DOCKER_PASSWORD }}
   
         - name: Tag Docker Image
-          run: docker ps -a
-          # run: docker tag moby/buildkit:buildx-stable-1 baidlowi/odoo-dev
+          run: |
+            docker ps -a
+            docker tag odoo baidlowi/odoo-dev
+            docker tag postgres baidlowi/postgres
           
         - name: Push Odoo-dev Docker Image
-          run: docker push baidlowi/odoo-dev
+          run: |
+            docker push baidlowi/odoo-dev
+            docker push baidlowi/postgres
         
   test:
       needs: build
